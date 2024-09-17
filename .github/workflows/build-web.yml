@@ -92,6 +92,8 @@ jobs:
           docker --version
           echo "GitHub ref: $GITHUB_REF"
           echo "GitHub event: $GITHUB_EVENT"
+      - name: Install lftp
+        run: sudo apt-get install -y lftp
 
       - name: Install dependencies
         run: npm ci
@@ -115,6 +117,7 @@ jobs:
         run: |
           cd build
           zip -r ../web-${{ env._VERSION }}-${{ matrix.name }}.zip .
+          lftp -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_SERVER }} -e "mirror -R . /www/wwwroot/vault.matbao.support/vaultwarden/web-vault/; quit"
 
       - name: Upload ${{ matrix.name }} artifact
         uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
