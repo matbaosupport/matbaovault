@@ -112,7 +112,9 @@ jobs:
 
       - name: Package artifact
         working-directory: apps/web
-        run: zip -r web-${{ env._VERSION }}-${{ matrix.name }}.zip build
+        run: |
+          cd build
+          zip -r ../web-${{ env._VERSION }}-${{ matrix.name }}.zip .
 
       - name: Upload ${{ matrix.name }} artifact
         uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
@@ -122,7 +124,7 @@ jobs:
           if-no-files-found: error
       - name: Set Release Name
         id: set_release_name
-        run: echo "RELEASE_NAME=$(date +'%Y%m%d_%H%M%S')" >> $GITHUB_ENV
+        run: echo "RELEASE_NAME=$(date +'%Y%m%d_%H%M')" >> $GITHUB_ENV
 
       - name: Create GitHub Release
         id: create_release
