@@ -120,6 +120,26 @@ jobs:
           name: web-${{ env._VERSION }}-${{ matrix.name }}.zip
           path: apps/web/web-${{ env._VERSION }}-${{ matrix.name }}.zip
           if-no-files-found: error
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: web-${{ env._VERSION }}-${{ matrix.name }}
+          release_name: Release web-${{ env._VERSION }}-${{ matrix.name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: apps/web/web-${{ env._VERSION }}-${{ matrix.name }}.zip
+          asset_name: web-${{ env._VERSION }}-${{ matrix.name }}.zip
+          asset_content_type: application/zip
 
   check-failures:
     name: Check for failures
