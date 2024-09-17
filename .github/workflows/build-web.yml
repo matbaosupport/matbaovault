@@ -71,20 +71,6 @@ jobs:
             npm_command: "dist:bit:cloud"
           - name: "selfhosted-COMMERCIAL"
             npm_command: "dist:bit:selfhost"
-          - name: "cloud-QA"
-            npm_command: "build:bit:qa"
-            git_metadata: true
-          - name: "ee"
-            npm_command: "build:bit:ee"
-            git_metadata: true
-          - name: "cloud-euprd"
-            npm_command: "build:bit:euprd"
-          - name: "cloud-euqa"
-            npm_command: "build:bit:euqa"
-            git_metadata: true
-          - name: "cloud-usdev"
-            npm_command: "build:bit:usdev"
-            git_metadata: true
 
     steps:
       - name: Checkout repo
@@ -120,6 +106,8 @@ jobs:
 
       - name: Build ${{ matrix.name }}
         working-directory: apps/web
+        env:
+          NODE_OPTIONS: "--max_old_space_size=4096"
         run: npm run ${{ matrix.npm_command }}
 
       - name: Package artifact
@@ -168,33 +156,6 @@ jobs:
           else
             echo "is_publish_branch=false" >> $GITHUB_ENV
           fi
-
-      ########## ACRs ##########
-      - name: Login to Prod Azure
-        uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
-        with:
-          creds: ${{ secrets.AZURE_PROD_KV_CREDENTIALS }}
-
-      - name: Log into Prod container registry
-        run: az acr login -n bitwardenprod
-
-      - name: Login to Azure - CI Subscription
-        uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
-        with:
-          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
-
-      - name: Retrieve github PAT secrets
-        id: retrieve-secret-pat
-        uses: nkyo/gh-actions/get-keyvault-secrets@main
-        with:
-          keyvault: "bitwarden-ci"
-          secrets: "github-pat-bitwarden-devops-bot-repo-scope"
-
-      - name: Download ${{ matrix.artifact_name }} artifact
-        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
-        with:
-          name: web-${{ env._VERSION }}-${{ matrix.artifact_name }}.zip
-          path: apps/web
 
       ########## Generate image tag and build Docker image ##########
       - name: Generate Docker image tag
