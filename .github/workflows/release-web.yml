@@ -38,7 +38,7 @@ jobs:
 
       - name: Check Release Version
         id: version
-        uses: bitwarden/gh-actions/release-version-check@main
+        uses: nkyo/gh-actions/release-version-check@main
         with:
           release-type: ${{ github.event.inputs.release_type }}
           project-type: ts
@@ -54,7 +54,7 @@ jobs:
     steps:
       - name: Download latest build artifacts
         if: ${{ github.event.inputs.release_type != 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: nkyo/gh-actions/download-artifacts@main
         with:
           workflow: build-web.yml
           path: apps/web/artifacts
@@ -65,7 +65,7 @@ jobs:
 
       - name: Dry Run - Download latest build artifacts
         if: ${{ github.event.inputs.release_type == 'Dry Run' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: nkyo/gh-actions/download-artifacts@main
         with:
           workflow: build-web.yml
           path: apps/web/artifacts

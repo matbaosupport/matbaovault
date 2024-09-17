@@ -33,9 +33,6 @@ on:
         description: "Custom image tag extension"
         required: false
 
-env:
-  _AZ_REGISTRY: bitwardenprod.azurecr.io
-
 jobs:
   setup:
     name: Setup
@@ -188,7 +185,7 @@ jobs:
 
       - name: Retrieve github PAT secrets
         id: retrieve-secret-pat
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: nkyo/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: "bitwarden-ci"
           secrets: "github-pat-bitwarden-devops-bot-repo-scope"
@@ -231,7 +228,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
           PROJECT_NAME: ${{ matrix.image_name }}
-        run: echo "name=$_AZ_REGISTRY/${PROJECT_NAME}:${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        run: echo "name=git.matbao.support/support-team/docker:${IMAGE_TAG}" >> $GITHUB_OUTPUT
 
       - name: Build Docker image
         uses: docker/build-push-action@5cd11c3a4ced054e52742c5fd54dca954e0edd85 # v6.7.0
@@ -239,47 +236,17 @@ jobs:
           context: apps/web
           file: apps/web/Dockerfile
           platforms: linux/amd64
-          push: true
+          push: false
           tags: ${{ steps.image-name.outputs.name }}
-          secrets: |
-            "GH_PAT=${{ steps.retrieve-secret-pat.outputs.github-pat-bitwarden-devops-bot-repo-scope }}"
+
+      - name: Log in to GitLab Container Registry
+        run: echo "${{ secrets.GITLAB_TOKEN }}" | docker login git.matbao.support -u ${{ secrets.GITLAB_USERNAME }} --password-stdin
+
+      - name: Push Docker image to GitLab
+        run: docker push ${{ steps.image-name.outputs.name }}
 
       - name: Log out of Docker
         run: docker logout
-
-
-  crowdin-push:
-    name: Crowdin Push
-    if: github.ref == 'refs/heads/main'
-    needs: build-artifacts
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
-      - name: Login to Azure
-        uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
-        with:
-          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
-
-      - name: Retrieve secrets
-        id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
-        with:
-          keyvault: "bitwarden-ci"
-          secrets: "crowdin-api-token"
-
-      - name: Upload Sources
-        uses: crowdin/github-action@30849777a3cba6ee9a09e24e195272b8287a0a5b # v1.20.4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CROWDIN_API_TOKEN: ${{ steps.retrieve-secrets.outputs.crowdin-api-token }}
-          CROWDIN_PROJECT_ID: "308189"
-        with:
-          config: apps/web/crowdin.yml
-          crowdin_branch_name: main
-          upload_sources: true
-          upload_translations: false
 
   trigger-web-vault-deploy:
     name: Trigger web vault deploy
@@ -287,18 +254,6 @@ jobs:
     runs-on: ubuntu-22.04
     needs: build-artifacts
     steps:
-      - name: Login to Azure - CI Subscription
-        uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
-        with:
-          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
-
-      - name: Retrieve github PAT secrets
-        id: retrieve-secret-pat
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
-        with:
-          keyvault: "bitwarden-ci"
-          secrets: "github-pat-bitwarden-devops-bot-repo-scope"
-
       - name: Trigger web vault deploy using GitHub Run ID
         uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
         with:
@@ -323,31 +278,8 @@ jobs:
       - setup
       - build-artifacts
       - build-containers
-      - crowdin-push
       - trigger-web-vault-deploy
     steps:
       - name: Check if any job failed
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/hotfix-rc') && contains(needs.*.result, 'failure')
         run: exit 1
-
-      - name: Login to Azure - Prod Subscription
-        uses: Azure/login@e15b166166a8746d1a47596803bd8c1b595455cf # v1.6.0
-        if: failure()
-        with:
-          creds: ${{ secrets.AZURE_KV_CI_SERVICE_PRINCIPAL }}
-
-      - name: Retrieve secrets
-        id: retrieve-secrets
-        if: failure()
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
-        with:
-          keyvault: "bitwarden-ci"
-          secrets: "devops-alerts-slack-webhook-url"
-
-      - name: Notify Slack on failure
-        uses: act10ns/slack@44541246747a30eb3102d87f7a4cc5471b0ffb7d # v2.1.0
-        if: failure()
-        env:
-          SLACK_WEBHOOK_URL: ${{ steps.retrieve-secrets.outputs.devops-alerts-slack-webhook-url }}
-        with:
-          status: ${{ job.status }}

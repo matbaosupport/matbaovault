@@ -48,7 +48,7 @@ jobs:
 
       - name: Check Release Version
         id: version
-        uses: bitwarden/gh-actions/release-version-check@main
+        uses: nkyo/gh-actions/release-version-check@main
         with:
           release-type: 'Initial Release'
           project-type: ts
@@ -245,7 +245,7 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: nkyo/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: "bitwarden-ci"
           secrets: "code-signing-vault-url,
@@ -665,7 +665,7 @@ jobs:
 
       - name: Download artifact from hotfix-rc
         if: github.ref == 'refs/heads/hotfix-rc'
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: nkyo/gh-actions/download-artifacts@main
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
@@ -674,7 +674,7 @@ jobs:
 
       - name: Download artifact from rc
         if: github.ref == 'refs/heads/rc'
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: nkyo/gh-actions/download-artifacts@main
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
@@ -683,7 +683,7 @@ jobs:
 
       - name: Download artifacts from main
         if: ${{ github.ref != 'refs/heads/rc' && github.ref != 'refs/heads/hotfix-rc' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: nkyo/gh-actions/download-artifacts@main
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
@@ -873,7 +873,7 @@ jobs:
 
       - name: Download artifact from hotfix-rc
         if: github.ref == 'refs/heads/hotfix-rc'
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: nkyo/gh-actions/download-artifacts@main
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
@@ -882,7 +882,7 @@ jobs:
 
       - name: Download artifact from rc
         if: github.ref == 'refs/heads/rc'
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: nkyo/gh-actions/download-artifacts@main
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
@@ -891,7 +891,7 @@ jobs:
 
       - name: Download artifact from main
         if: ${{ github.ref != 'refs/heads/rc' && github.ref != 'refs/heads/hotfix-rc' }}
-        uses: bitwarden/gh-actions/download-artifacts@main
+        uses: nkyo/gh-actions/download-artifacts@main
         with:
           workflow: build-browser.yml
           workflow_conclusion: success
@@ -950,7 +950,7 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: nkyo/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: "bitwarden-ci"
           secrets: "aws-electron-access-id,

@@ -284,7 +284,7 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: nkyo/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: "bitwarden-ci"
           secrets: "code-signing-vault-url,
@@ -881,7 +881,7 @@ jobs:
 
       - name: Retrieve Slack secret
         id: retrieve-slack-secret
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: nkyo/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: bitwarden-ci
           secrets: "slack-bot-token"
@@ -1293,7 +1293,7 @@ jobs:
 
       - name: Retrieve secrets
         id: retrieve-secrets
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: nkyo/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: "bitwarden-ci"
           secrets: "crowdin-api-token"
@@ -1339,7 +1339,7 @@ jobs:
       - name: Retrieve secrets
         id: retrieve-secrets
         if: failure()
-        uses: bitwarden/gh-actions/get-keyvault-secrets@main
+        uses: nkyo/gh-actions/get-keyvault-secrets@main
         with:
           keyvault: "bitwarden-ci"
           secrets: "devops-alerts-slack-webhook-url"

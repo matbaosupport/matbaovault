@@ -14,7 +14,7 @@ on:
 jobs:
   check-run:
     name: Check PR run
-    uses: bitwarden/gh-actions/.github/workflows/check-run.yml@main
+    uses: nkyo/gh-actions/.github/workflows/check-run.yml@main
 
   sast:
     name: SAST scan
