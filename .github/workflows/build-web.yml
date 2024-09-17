@@ -55,23 +55,13 @@ jobs:
           NODE_VERSION=${NODE_NVMRC/v/''}
           echo "node_version=$NODE_VERSION" >> $GITHUB_OUTPUT
 
-  build-artifacts:
-    name: Build artifacts
+  build-and-zip:
+    name: Build and Create Zip Release
     runs-on: ubuntu-22.04
     needs: setup
     env:
       _VERSION: ${{ needs.setup.outputs.version }}
       _NODE_VERSION: ${{ needs.setup.outputs.node_version }}
-    strategy:
-      matrix:
-        include:
-          - name: "selfhosted-open-source"
-            npm_command: "dist:oss:selfhost"
-          - name: "cloud-COMMERCIAL"
-            npm_command: "dist:bit:cloud"
-          - name: "selfhosted-COMMERCIAL"
-            npm_command: "dist:bit:selfhost"
-
     steps:
       - name: Checkout repo
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
@@ -83,163 +73,29 @@ jobs:
           cache-dependency-path: '**/package-lock.json'
           node-version: ${{ env._NODE_VERSION }}
 
-      - name: Print environment
-        run: |
-          whoami
-          node --version
-          npm --version
-          gulp --version
-          docker --version
-          echo "GitHub ref: $GITHUB_REF"
-          echo "GitHub event: $GITHUB_EVENT"
-
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
-      - name: Add Git metadata to build version
-        working-directory: apps/web
-        if: matrix.git_metadata
+      - name: Build project
+        run: npm run build
+
+      - name: Create zip release
         run: |
-          VERSION=$( jq -r ".version" package.json)
-          jq --arg version "$VERSION+${GITHUB_SHA:0:7}" '.version = $version' package.json > package.json.tmp
-          mv package.json.tmp package.json
-
-      - name: Build ${{ matrix.name }}
-        working-directory: apps/web
+          zip -r web-${{ env._VERSION }}.zip ./dist
         env:
-          NODE_OPTIONS: "--max_old_space_size=4096"
-        run: npm run ${{ matrix.npm_command }}
+          _VERSION: ${{ needs.setup.outputs.version }}
 
-      - name: Package artifact
-        working-directory: apps/web
-        run: zip -r web-${{ env._VERSION }}-${{ matrix.name }}.zip build
-
-      - name: Upload ${{ matrix.name }} artifact
-        uses: actions/upload-artifact@50769540e7f4bd5e21e526ee35c689e35e0d6874 # v4.4.0
+      - name: Upload zip release
+        uses: actions/upload-artifact@v2
         with:
-          name: web-${{ env._VERSION }}-${{ matrix.name }}.zip
-          path: apps/web/web-${{ env._VERSION }}-${{ matrix.name }}.zip
-          if-no-files-found: error
-
-
-  build-containers:
-    name: Build Docker images
-    runs-on: ubuntu-22.04
-    needs:
-      - setup
-      - build-artifacts
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - artifact_name: cloud-QA
-            image_name: web-qa-cloud
-          - artifact_name: ee
-            image_name: web-ee
-          - artifact_name: selfhosted-COMMERCIAL
-            image_name: web
-    env:
-      _VERSION: ${{ needs.setup.outputs.version }}
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-
-      - name: Check Branch to Publish
-        env:
-          PUBLISH_BRANCHES: "main,rc,hotfix-rc-web"
-        id: publish-branch-check
-        run: |
-          IFS="," read -a publish_branches <<< $PUBLISH_BRANCHES
-
-          if [[ " ${publish_branches[*]} " =~ " ${GITHUB_REF:11} " ]]; then
-            echo "is_publish_branch=true" >> $GITHUB_ENV
-          else
-            echo "is_publish_branch=false" >> $GITHUB_ENV
-          fi
-
-      ########## Generate image tag and build Docker image ##########
-      - name: Generate Docker image tag
-        id: tag
-        run: |
-          if [[ $(grep "pull" <<< "${GITHUB_REF}") ]]; then
-            IMAGE_TAG=$(echo "${GITHUB_HEAD_REF}" | sed "s#/#-#g")
-          else
-            IMAGE_TAG=$(echo "${GITHUB_REF_NAME}" | sed "s#/#-#g")
-          fi
-
-          if [[ "$IMAGE_TAG" == "main" ]]; then
-            IMAGE_TAG=dev
-          fi
-
-          TAG_EXTENSION=${{ github.event.inputs.custom_tag_extension }}
-
-          if [[ $TAG_EXTENSION ]]; then
-            IMAGE_TAG=$IMAGE_TAG-$TAG_EXTENSION
-          fi
-
-          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
-
-      ########## Build Image ##########
-      - name: Extract artifact
-        working-directory: apps/web
-        run: unzip web-${{ env._VERSION }}-${{ matrix.artifact_name }}.zip
-
-      - name: Generate image full name
-        id: image-name
-        env:
-          IMAGE_TAG: ${{ steps.tag.outputs.image_tag }}
-          PROJECT_NAME: ${{ matrix.image_name }}
-        run: echo "name=git.matbao.support/support-team/docker:${IMAGE_TAG}" >> $GITHUB_OUTPUT
-
-      - name: Build Docker image
-        uses: docker/build-push-action@5cd11c3a4ced054e52742c5fd54dca954e0edd85 # v6.7.0
-        with:
-          context: apps/web
-          file: apps/web/Dockerfile
-          platforms: linux/amd64
-          push: false
-          tags: ${{ steps.image-name.outputs.name }}
-
-      - name: Log in to GitLab Container Registry
-        run: echo "${{ secrets.GITLAB_TOKEN }}" | docker login git.matbao.support -u ${{ secrets.GITLAB_USERNAME }} --password-stdin
-
-      - name: Push Docker image to GitLab
-        run: docker push ${{ steps.image-name.outputs.name }}
-
-      - name: Log out of Docker
-        run: docker logout
-
-  trigger-web-vault-deploy:
-    name: Trigger web vault deploy
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-22.04
-    needs: build-artifacts
-    steps:
-      - name: Trigger web vault deploy using GitHub Run ID
-        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
-        with:
-          github-token: ${{ steps.retrieve-secret-pat.outputs.github-pat-bitwarden-devops-bot-repo-scope }}
-          script: |
-            await github.rest.actions.createWorkflowDispatch({
-              owner: 'bitwarden',
-              repo: 'clients',
-              workflow_id: 'deploy-web.yml',
-              ref: 'main',
-              inputs: {
-                'environment': 'USDEV',
-                'build-web-run-id': '${{ github.run_id }}'
-              }
-            })
-
+          name: web-${{ env._VERSION }}.zip
+          path: web-${{ env._VERSION }}.zip
   check-failures:
     name: Check for failures
     if: always()
     runs-on: ubuntu-22.04
     needs:
       - setup
-      - build-artifacts
-      - build-containers
-      - trigger-web-vault-deploy
     steps:
       - name: Check if any job failed
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/rc' || github.ref == 'refs/heads/hotfix-rc') && contains(needs.*.result, 'failure')
