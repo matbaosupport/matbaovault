@@ -124,7 +124,7 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           tag_name: web-${{ env._VERSION }}-${{ matrix.name }}
           release_name: Release web-${{ env._VERSION }}-${{ matrix.name }}
@@ -134,7 +134,7 @@ jobs:
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: apps/web/web-${{ env._VERSION }}-${{ matrix.name }}.zip
