@@ -1,12 +1,4 @@
 {
-  "managedEnvironment": {
-    "webVault": "https://vault.matbao.support/",
-    "api": "https://vault.matbao.support/api",
-    "identity": "https://vault.matbao.support/identity",
-    "notifications": "https://vault.matbao.support/notifications",
-    "icons": "https://vault.matbao.support/icons",
-    "send": "https://vault.matbao.support/#/send"
-  },
   "flags": {
     "accountSwitching": true
   }

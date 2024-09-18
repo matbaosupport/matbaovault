@@ -1,9 +1,9 @@
 {
   "appName": {
-    "message": "Bitwarden"
+    "message": "MatBao Vault"
   },
   "extName": {
-    "message": "Bitwarden Password Manager",
+    "message": "MatBao Password Vault",
     "description": "Extension name, MUST be less than 40 characters (Safari restriction)"
   },
   "extDesc": {
@@ -2813,7 +2813,7 @@
     "message": "Server version"
   },
   "selfHostedServer": {
-    "message": "self-hosted"
+    "message": "Self-Hosted"
   },
   "thirdParty": {
     "message": "Third-party"
@@ -2963,7 +2963,7 @@
     }
   },
   "loggingInOn": {
-    "message": "Logging in on"
+    "message": "Logging in"
   },
   "opensInANewWindow": {
     "message": "Opens in a new window"
@@ -4308,9 +4308,6 @@
   },
   "enterprisePolicyRequirementsApplied": {
     "message": "Enterprise policy requirements have been applied to this setting"
-  },
-  "fileSavedToDevice": {
-    "message": "File saved to device. Manage from your device downloads."
   },
   "showCharacterCount": {
     "message": "Show character count"

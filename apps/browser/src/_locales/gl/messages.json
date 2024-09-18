@@ -1,6 +1,6 @@
 {
   "appName": {
-    "message": "Bitwarden"
+    "message": "MatBao Vault"
   },
   "extName": {
     "message": "Bitwarden - Xestor de contrasinais",
@@ -2963,7 +2963,7 @@
     }
   },
   "loggingInOn": {
-    "message": "Logging in on"
+    "message": "Logging in"
   },
   "opensInANewWindow": {
     "message": "Opens in a new window"
@@ -4308,9 +4308,6 @@
   },
   "enterprisePolicyRequirementsApplied": {
     "message": "Enterprise policy requirements have been applied to this setting"
-  },
-  "fileSavedToDevice": {
-    "message": "File saved to device. Manage from your device downloads."
   },
   "showCharacterCount": {
     "message": "Show character count"
