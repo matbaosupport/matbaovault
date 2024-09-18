@@ -75,8 +75,7 @@ const decorators = (options: {
               getRegion: () => options.defaultRegion || Region.US,
             } as Partial<Environment>),
             availableRegions: () => [
-              { key: Region.US, domain: "bitwarden.com", urls: {} },
-              { key: Region.EU, domain: "bitwarden.eu", urls: {} },
+              { key: Region.US, domain: "vault.matbao.support", urls: {} },
             ],
             setEnvironment: (region: Region, urls?: Urls) => Promise.resolve({}),
           } as Partial<EnvironmentService>,
@@ -131,7 +130,7 @@ export const WebEURegionExample: Story = {
   decorators: decorators({
     clientType: ClientType.Web,
     queryParams: {},
-    defaultRegion: Region.EU,
+    defaultRegion: Region.US,
   }),
 };
 
@@ -172,7 +171,7 @@ export const DesktopEURegionExample: Story = {
   }),
   decorators: decorators({
     clientType: ClientType.Desktop,
-    defaultRegion: Region.EU,
+    defaultRegion: Region.US,
     isSelfHost: false,
   }),
 };
@@ -214,7 +213,7 @@ export const BrowserExtensionEURegionExample: Story = {
   }),
   decorators: decorators({
     clientType: ClientType.Browser,
-    defaultRegion: Region.EU,
+    defaultRegion: Region.US,
     isSelfHost: false,
   }),
 };

@@ -83,32 +83,18 @@ export const USER_CLOUD_REGION_KEY = new UserKeyDefinition<CloudRegion>(
 export const PRODUCTION_REGIONS: RegionConfig[] = [
   {
     key: Region.US,
-    domain: "bitwarden.com",
+    domain: "vault.matbao.support",
     urls: {
       base: null,
-      api: "https://api.bitwarden.com",
-      identity: "https://identity.bitwarden.com",
-      icons: "https://icons.bitwarden.net",
-      webVault: "https://vault.bitwarden.com",
-      notifications: "https://notifications.bitwarden.com",
-      events: "https://events.bitwarden.com",
-      scim: "https://scim.bitwarden.com",
+      webVault: "https://vault.matbao.support",
+      identity: "https://vault.matbao.support/identity",
+      api: "https://vault.matbao.support/api",
+      icons: "https://vault.matbao.support/icons",
+      notifications: "https://vault.matbao.support/notifications",
+      events: "https://vault.matbao.support/events",
+      scim: "https://scim.bitwarden.com/v2",
     },
-  },
-  {
-    key: Region.EU,
-    domain: "bitwarden.eu",
-    urls: {
-      base: null,
-      api: "https://api.bitwarden.eu",
-      identity: "https://identity.bitwarden.eu",
-      icons: "https://icons.bitwarden.eu",
-      webVault: "https://vault.bitwarden.eu",
-      notifications: "https://notifications.bitwarden.eu",
-      events: "https://events.bitwarden.eu",
-      scim: "https://scim.bitwarden.eu",
-    },
-  },
+  }
 ];
 
 /**
@@ -191,7 +177,7 @@ export class DefaultEnvironmentService implements EnvironmentService {
   async setEnvironment(region: Region, urls?: Urls): Promise<Urls> {
     // Unknown regions are treated as self-hosted
     if (this.getRegionConfig(region) == null) {
-      region = Region.SelfHosted;
+      region = Region.US;
     }
 
     // If self-hosted ensure urls are valid else fallback to default region
@@ -242,7 +228,7 @@ export class DefaultEnvironmentService implements EnvironmentService {
   protected buildEnvironment(region: Region, urls: Urls) {
     // Unknown regions are treated as self-hosted
     if (this.getRegionConfig(region) == null) {
-      region = Region.SelfHosted;
+      region = Region.US;
     }
 
     // If self-hosted ensure urls are valid else fallback to default region
@@ -391,14 +377,14 @@ abstract class UrlEnvironment implements Environment {
       return this.urls.scim + "/v2";
     }
 
-    return this.getWebVaultUrl() === "https://vault.bitwarden.com"
+    return this.getWebVaultUrl() === "https://vault.matbao.support"
       ? "https://scim.bitwarden.com/v2"
       : this.getWebVaultUrl() + "/scim/v2";
   }
 
   getSendUrl() {
-    return this.getWebVaultUrl() === "https://vault.bitwarden.com"
-      ? "https://send.bitwarden.com/#"
+    return this.getWebVaultUrl() === "https://vault.matbao.support"
+      ? "https://vault.matbao.support/#/send/"
       : this.getWebVaultUrl() + "/#/send/";
   }
 
@@ -438,7 +424,7 @@ export class CloudEnvironment extends UrlEnvironment {
   }
 
   /**
-   * Cloud always returns nice urls, i.e. bitwarden.com instead of vault.bitwarden.com.
+   * Cloud always returns nice urls, i.e. bitwarden.com instead of vault.matbao.support.
    */
   getHostname() {
     return this.config.domain;

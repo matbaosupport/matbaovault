@@ -260,22 +260,20 @@ app-vault-icon,
 
 .logo-image {
   margin: 0 auto;
-  width: 142px;
-  height: 21px;
-  background-size: 142px 21px;
+  width: 150px;
+  background-size: 150px;
   background-repeat: no-repeat;
   @include themify($themes) {
     background-image: url("../images/logo-" + themed("logoSuffix") + "@2x.png");
   }
   @media (min-width: 219px) {
-    width: 189px;
-    height: 28px;
-    background-size: 189px 28px;
+    width: 150px;
+    background-size: 150px;
   }
   @media (min-width: 314px) {
-    width: 284px;
+    width: 150px;
     height: 43px;
-    background-size: 284px 43px;
+    background-size: 150px 43px;
   }
 }
 
