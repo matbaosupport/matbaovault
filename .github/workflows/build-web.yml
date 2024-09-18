@@ -65,10 +65,10 @@ jobs:
     strategy:
       matrix:
         include:
-          # - name: "selfhosted-open-source"
-          #   npm_command: "dist:oss:selfhost"
-          - name: "cloud-COMMERCIAL"
-            npm_command: "dist:bit:cloud"
+          - name: "selfhosted-open-source"
+            npm_command: "dist:oss:selfhost"
+          # - name: "cloud-COMMERCIAL"
+          #   npm_command: "dist:bit:cloud"
           # - name: "selfhosted-COMMERCIAL"
           #   npm_command: "dist:bit:selfhost"
 
