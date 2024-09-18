@@ -7,10 +7,10 @@
     <packageSourceUrl>https://github.com/bitwarden/clients/tree/master/apps/desktop/stores/chocolatey</packageSourceUrl>
     <owners>kspearrin</owners>
     <title>Bitwarden</title>
-    <authors>Bitwarden Inc.</authors>
+    <authors>MatBao Support</authors>
     <projectUrl>https://bitwarden.com/</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/bitwarden/brand/master/icons/256x256.png</iconUrl>
-    <copyright>Copyright © 2015-2024 Bitwarden Inc.</copyright>
+    <copyright>Copyright © 2015-2024 MatBao Support</copyright>
     <projectSourceUrl>https://github.com/bitwarden/clients/</projectSourceUrl>
     <docsUrl>https://bitwarden.com/help/</docsUrl>
     <bugTrackerUrl>https://github.com/bitwarden/clients/issues</bugTrackerUrl>

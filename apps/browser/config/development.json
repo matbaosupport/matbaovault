@@ -1,12 +1,15 @@
 {
   "devFlags": {
     "managedEnvironment": {
-      "base": "https://localhost:8080"
-    },
-    "skipWelcomeOnInstall": true
+      "webVault": "https://vault.matbao.support/",
+      "api": "https://vault.matbao.support/api",
+      "identity": "https://vault.matbao.support/identity",
+      "notifications": "https://vault.matbao.support/notifications",
+      "icons": "https://vault.matbao.support/icons",
+      "send": "https://vault.matbao.support/#/send"
+    }
   },
   "flags": {
-    "showPasswordless": true,
     "accountSwitching": true
   }
 }

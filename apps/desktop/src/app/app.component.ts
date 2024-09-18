@@ -304,7 +304,7 @@ export class AppComponent implements OnInit, OnDestroy {
             const queryParams = {
               code: message.code,
               state: message.state,
-              redirectUri: message.redirectUri ?? "bitwarden://sso-callback",
+              redirectUri: message.redirectUri ?? "matbaovault://sso-callback",
             };
             // FIXME: Verify that this floating promise is intentional. If it is, add an explanatory comment and ensure there is proper error handling.
             // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -817,15 +817,15 @@ export class AppComponent implements OnInit, OnDestroy {
       return;
     }
 
-    if (urlString.indexOf("bitwarden://duo-callback") === 0) {
+    if (urlString.indexOf("matbaovault://duo-callback") === 0) {
       message = "duoCallback";
     } else if (receivedState === null) {
       return;
     }
 
-    if (urlString.indexOf("bitwarden://import-callback-lp") === 0) {
+    if (urlString.indexOf("matbaovault://import-callback-lp") === 0) {
       message = "importCallbackLastPass";
-    } else if (urlString.indexOf("bitwarden://sso-callback") === 0) {
+    } else if (urlString.indexOf("matbaovault://sso-callback") === 0) {
       message = "ssoCallback";
     }
 

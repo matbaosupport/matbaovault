@@ -77,7 +77,7 @@ export class SsoComponent extends BaseSsoComponent {
       syncService.fullSync(true);
     };
 
-    this.redirectUri = "bitwarden://sso-callback";
+    this.redirectUri = "matbaovault://sso-callback";
     this.clientId = "desktop";
   }
 }

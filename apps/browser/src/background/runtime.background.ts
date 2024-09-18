@@ -386,7 +386,7 @@ export default class RuntimeBackground {
       if (this.onInstalledReason != null) {
         if (this.onInstalledReason === "install") {
           if (!devFlagEnabled("skipWelcomeOnInstall")) {
-            void BrowserApi.createNewTab("https://bitwarden.com/browser-start/");
+            void BrowserApi.createNewTab("https://matbao.support/vault");
           }
 
           await this.autofillSettingsService.setInlineMenuVisibility(

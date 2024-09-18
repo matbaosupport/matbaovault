@@ -76,27 +76,14 @@ describe("EnvironmentService", () => {
     {
       region: Region.US,
       expectedUrls: {
-        webVault: "https://vault.bitwarden.com",
-        identity: "https://identity.bitwarden.com",
-        api: "https://api.bitwarden.com",
-        icons: "https://icons.bitwarden.net",
-        notifications: "https://notifications.bitwarden.com",
-        events: "https://events.bitwarden.com",
+        webVault: "https://vault.matbao.support",
+        identity: "https://vault.matbao.support/identity",
+        api: "https://vault.matbao.support/api",
+        icons: "https://vault.matbao.support/icons",
+        notifications: "https://vault.matbao.support/notifications",
+        events: "https://vault.matbao.support/events",
         scim: "https://scim.bitwarden.com/v2",
-        send: "https://send.bitwarden.com/#",
-      },
-    },
-    {
-      region: Region.EU,
-      expectedUrls: {
-        webVault: "https://vault.bitwarden.eu",
-        identity: "https://identity.bitwarden.eu",
-        api: "https://api.bitwarden.eu",
-        icons: "https://icons.bitwarden.eu",
-        notifications: "https://notifications.bitwarden.eu",
-        events: "https://events.bitwarden.eu",
-        scim: "https://scim.bitwarden.eu/v2",
-        send: "https://vault.bitwarden.eu/#/send/",
+        send: "https://vault.matbao.support/#/send/",
       },
     },
   ];
@@ -244,7 +231,7 @@ describe("EnvironmentService", () => {
   describe("setEnvironment", () => {
     it("self-hosted with base-url", async () => {
       await sut.setEnvironment(Region.SelfHosted, {
-        base: "base.example.com",
+        base: "vault.matbao.support",
       });
       await awaitAsync();
 
@@ -252,7 +239,7 @@ describe("EnvironmentService", () => {
 
       expect(env.getRegion()).toBe(Region.SelfHosted);
       expect(env.getUrls()).toEqual({
-        base: "https://base.example.com",
+        base: "https://vault.matbao.support",
         api: null,
         identity: null,
         webVault: null,
@@ -269,7 +256,7 @@ describe("EnvironmentService", () => {
       expect(env.getScimUrl()).toBe("https://scim.bitwarden.com/v2");
 
       await sut.setEnvironment(Region.SelfHosted, {
-        base: "base.example.com",
+        base: "vault.matbao.support",
         api: "api.example.com",
         identity: "identity.example.com",
         webVault: "vault.example.com",
@@ -282,7 +269,7 @@ describe("EnvironmentService", () => {
 
       expect(env.getRegion()).toBe(Region.SelfHosted);
       expect(env.getUrls()).toEqual({
-        base: "https://base.example.com",
+        base: "https://vault.matbao.support",
         api: "https://api.example.com",
         identity: "https://identity.example.com",
         webVault: "https://vault.example.com",
@@ -306,8 +293,7 @@ describe("EnvironmentService", () => {
 
   describe("getEnvironment", () => {
     it.each([
-      { region: Region.US, expectedHost: "bitwarden.com" },
-      { region: Region.EU, expectedHost: "bitwarden.eu" },
+      { region: Region.US, expectedHost: "vault.matbao.support" },
     ])("gets it from user data if there is an active user", async ({ region, expectedHost }) => {
       setGlobalData(Region.US, new EnvironmentUrls());
       setUserData(region, new EnvironmentUrls());
@@ -319,8 +305,7 @@ describe("EnvironmentService", () => {
     });
 
     it.each([
-      { region: Region.US, expectedHost: "bitwarden.com" },
-      { region: Region.EU, expectedHost: "bitwarden.eu" },
+      { region: Region.US, expectedHost: "vault.matbao.support" },
     ])("gets it from global data if there is no active user", async ({ region, expectedHost }) => {
       setGlobalData(region, new EnvironmentUrls());
       setUserData(Region.US, new EnvironmentUrls());
@@ -330,8 +315,7 @@ describe("EnvironmentService", () => {
     });
 
     it.each([
-      { region: Region.US, expectedHost: "bitwarden.com" },
-      { region: Region.EU, expectedHost: "bitwarden.eu" },
+      { region: Region.US, expectedHost: "vault.matbao.support" },
     ])(
       "gets it from global state if there is no active user even if a user id is passed in.",
       async ({ region, expectedHost }) => {
@@ -344,8 +328,7 @@ describe("EnvironmentService", () => {
     );
 
     it.each([
-      { region: Region.US, expectedHost: "bitwarden.com" },
-      { region: Region.EU, expectedHost: "bitwarden.eu" },
+      { region: Region.US, expectedHost: "vault.matbao.support" },
     ])(
       "gets it from the passed in userId if there is any active user: %s",
       async ({ region, expectedHost }) => {
@@ -362,20 +345,18 @@ describe("EnvironmentService", () => {
 
     it("gets it from base url saved in self host config", async () => {
       const globalSelfHostUrls = new EnvironmentUrls();
-      globalSelfHostUrls.base = "https://base.example.com";
+      globalSelfHostUrls.base = "https://vault.matbao.support";
       setGlobalData(Region.SelfHosted, globalSelfHostUrls);
-      setUserData(Region.EU, new EnvironmentUrls());
 
       const env = await sut.getEnvironment();
-      expect(env.getHostname()).toBe("base.example.com");
+      expect(env.getHostname()).toBe("vault.matbao.support");
     });
 
     it("gets it from webVault url saved in self host config", async () => {
       const globalSelfHostUrls = new EnvironmentUrls();
-      globalSelfHostUrls.webVault = "https://vault.example.com";
-      globalSelfHostUrls.base = "https://base.example.com";
+      globalSelfHostUrls.webVault = "https://vault.matbao.support";
+      globalSelfHostUrls.base = "https://vault.matbao.support";
       setGlobalData(Region.SelfHosted, globalSelfHostUrls);
-      setUserData(Region.EU, new EnvironmentUrls());
 
       const env = await sut.getEnvironment();
       expect(env.getHostname()).toBe("vault.example.com");
@@ -383,28 +364,26 @@ describe("EnvironmentService", () => {
 
     it("gets it from saved self host config from passed in user when there is an active user", async () => {
       setGlobalData(Region.US, new EnvironmentUrls());
-      setUserData(Region.EU, new EnvironmentUrls());
 
       const selfHostUserUrls = new EnvironmentUrls();
-      selfHostUserUrls.base = "https://base.example.com";
+      selfHostUserUrls.base = "https://vault.matbao.support";
       setUserData(Region.SelfHosted, selfHostUserUrls, alternateTestUser);
 
       await switchUser(testUser);
 
       const env = await sut.getEnvironment(alternateTestUser);
-      expect(env.getHostname()).toBe("base.example.com");
+      expect(env.getHostname()).toBe("vault.matbao.support");
     });
   });
 
   describe("cloudWebVaultUrl$", () => {
     it("no extra initialization, returns US vault", async () => {
-      expect(await firstValueFrom(sut.cloudWebVaultUrl$)).toBe("https://vault.bitwarden.com");
+      expect(await firstValueFrom(sut.cloudWebVaultUrl$)).toBe("https://vault.matbao.support");
     });
 
     it.each([
-      { region: Region.US, expectedVault: "https://vault.bitwarden.com" },
-      { region: Region.EU, expectedVault: "https://vault.bitwarden.eu" },
-      { region: Region.SelfHosted, expectedVault: "https://vault.bitwarden.com" },
+      { region: Region.US, expectedVault: "https://vault.matbao.support" },
+      { region: Region.SelfHosted, expectedVault: "https://vault.matbao.support" },
     ])(
       "no extra initialization, returns expected host for each region %s",
       async ({ region, expectedVault }) => {

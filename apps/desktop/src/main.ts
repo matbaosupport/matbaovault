@@ -307,7 +307,7 @@ export class Main {
 
   private processDeepLink(argv: string[]): void {
     argv
-      .filter((s) => s.indexOf("bitwarden://") === 0)
+      .filter((s) => s.indexOf("matbaovault://") === 0)
       .forEach((s) => {
         this.messagingService.send("deepLink", { urlString: s });
       });
