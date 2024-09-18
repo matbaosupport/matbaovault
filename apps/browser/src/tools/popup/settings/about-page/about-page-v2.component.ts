@@ -17,7 +17,7 @@ import { AboutDialogComponent } from "../about-dialog/about-dialog.component";
 
 const RateUrls = {
   [DeviceType.ChromeExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
+    "https://chromewebstore.google.com/detail/matbao-password-vault/jgbojmmnfmilhbpojeeikojejonignfa/reviews",
   [DeviceType.FirefoxExtension]:
     "https://addons.mozilla.org/en-US/firefox/addon/bitwarden-password-manager/#reviews",
   [DeviceType.OperaExtension]:
@@ -25,7 +25,7 @@ const RateUrls = {
   [DeviceType.EdgeExtension]:
     "https://microsoftedge.microsoft.com/addons/detail/jbkfoedolllekgbhcbcoahefnbanhhlh",
   [DeviceType.VivaldiExtension]:
-    "https://chromewebstore.google.com/detail/bitwarden-free-password-m/nngceckbapebfimnlniiiahkandclblb/reviews",
+    "https://chromewebstore.google.com/detail/matbao-password-vault/jgbojmmnfmilhbpojeeikojejonignfa/reviews",
   [DeviceType.SafariExtension]: "https://apps.apple.com/app/bitwarden/id1352778147",
 };
 
@@ -61,7 +61,7 @@ export class AboutPageV2Component {
       acceptButtonText: { key: "continue" },
     });
     if (confirmed) {
-      await BrowserApi.createNewTab("https://bitwarden.com/help/");
+      await BrowserApi.createNewTab("https://matbao.support/help/");
     }
   }
 

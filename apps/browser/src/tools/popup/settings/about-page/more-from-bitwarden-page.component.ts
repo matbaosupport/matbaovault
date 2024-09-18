@@ -49,7 +49,7 @@ export class MoreFromBitwardenPageComponent {
       acceptButtonText: { key: "continue" },
     });
     if (confirmed) {
-      await BrowserApi.createNewTab("https://bitwarden.com/products/business/");
+      await BrowserApi.createNewTab("https://matbao.net/products/business/");
     }
   }
 
@@ -61,7 +61,7 @@ export class MoreFromBitwardenPageComponent {
       acceptButtonText: { key: "continue" },
     });
     if (confirmed) {
-      await BrowserApi.createNewTab("https://bitwarden.com/products/authenticator");
+      await BrowserApi.createNewTab("https://matbao.net/products/authenticator");
     }
   }
 
@@ -73,7 +73,7 @@ export class MoreFromBitwardenPageComponent {
       acceptButtonText: { key: "continue" },
     });
     if (confirmed) {
-      await BrowserApi.createNewTab("https://bitwarden.com/products/secrets-manager");
+      await BrowserApi.createNewTab("https://matbao.net/products/secrets-manager");
     }
   }
 
@@ -85,7 +85,7 @@ export class MoreFromBitwardenPageComponent {
       acceptButtonText: { key: "continue" },
     });
     if (confirmed) {
-      await BrowserApi.createNewTab("https://bitwarden.com/products/passwordless");
+      await BrowserApi.createNewTab("https://matbao.net/products/passwordless");
     }
   }
 }

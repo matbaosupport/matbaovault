@@ -28,11 +28,5 @@
         </button>
       </div>
     </form>
-    <p class="createAccountLink">
-      {{ "newAroundHere" | i18n }}
-      <a [routerLink]="registerRoute$ | async" (click)="setLoginEmailValues()">{{
-        "createAccount" | i18n
-      }}</a>
-    </p>
   </div>
 </div>
